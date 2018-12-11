@@ -17,18 +17,25 @@ import java.io.*;
 public class MainActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     Intent takePictureIntent;
-    File dir = new File("data"+File.separator+"data"+File.separator+"com.example.tnb_20.takephoto"+File.separator+"files");
+    File dir = new File("data"+File.separator+"data"+File.separator+"com.example.tnb_20.photocapture"+File.separator+"files");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if(!dir.exists()){
+            dir.mkdir();
+        }
+
         ImageView img = findViewById(R.id.image);
-        File image = new File(dir, dir.listFiles()[dir.listFiles().length-1].getName());
-        if (image.exists()){
-            Uri uri = Uri.fromFile(image);
-            img.setImageURI(uri);
+
+        if(dir.listFiles().length > 0){
+            File image = new File(dir, dir.listFiles()[dir.listFiles().length-1].getName());
+            if (image.exists()){
+                Uri uri = Uri.fromFile(image);
+                img.setImageURI(uri);
+            }
         }
 
         Button b = findViewById(R.id.button);
@@ -52,10 +59,6 @@ public class MainActivity extends AppCompatActivity {
             ImageView iv = findViewById(R.id.image);
             iv.setImageBitmap(imageBitmap);
 
-            if(!dir.exists()){
-                dir.mkdir();
-            }
-
             OutputStream os = null;
             try {
                 for (int i = 0; i<=dir.listFiles().length; i++){
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             } catch(IOException e) {
-                System.out.println("ERROR al guardar la imagen");
+                System.err.println("[ERROR] - No se pudo guardar la imagen. Más información del error -> " + e);
             }
         }
     }
